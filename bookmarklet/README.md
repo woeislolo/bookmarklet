@@ -1,0 +1,2 @@
+# bookmarklet
+Django project
