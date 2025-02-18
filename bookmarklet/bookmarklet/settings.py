@@ -30,7 +30,7 @@ SECRET_KEY = config['project_secret_key']
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     # 'social_django',
     'django_extensions',
+    
+    'images.apps.ImagesConfig',
 ]
 
 MIDDLEWARE = [
