@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse
 
 from unidecode import unidecode
 
@@ -21,16 +22,16 @@ class Image(models.Model):
 
     def __str__(self):
         return self.title
-    
-    # def save(self, *args, **kwargs):
-    #     if not self.slug:
-    #         self.slug = slugify(self.title)
-    #     super().save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         if self.pk is None:
             self.slug = unidecode(self.title.lower().replace(' ', '_'))
         super(Image, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('images:detail', args=[self.id, 
+                                            #   self.slug
+                                              ])
 
  
     class Meta:

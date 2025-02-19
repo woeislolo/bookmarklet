@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Сохранить изображение в закладки{% endblock %}
+
+{% block content %}
+<h1>Сохранить изображение в закладки</h1>
+<img src="{{ request.GET.url }}" class="image-preview">
+<form method="post">
+{% csrf_token %}
+{{ form.as_p }}
+
+<input type="submit" value="В закладки">
+</form>
+{% endblock %}
