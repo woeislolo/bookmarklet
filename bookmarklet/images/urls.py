@@ -8,4 +8,5 @@ app_name = 'images'
 urlpatterns = [
     path('create/', image_create, name='create'),
     path('detail/<int:id>/', image_detail, name='detail'),
+    path('like/', image_like, name='like'),
     ]
