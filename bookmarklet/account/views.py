@@ -5,12 +5,11 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordChangeDoneView, \
     PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
-from django.contrib.postgres.search import SearchVector
-from django.db.models import Count
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, FormView, TemplateView, UpdateView
 from django.views.decorators.http import require_POST
+from django.http import JsonResponse
 
 from .forms import *
 
@@ -35,9 +34,10 @@ def logout_user(request):
 
 @login_required
 def dashboard(request):
-    return render(request,
-    'account/dashboard.html',
-    {'section': 'dashboard'})
+    return render(request=request,
+                  template_name='account/dashboard.html',
+                  context={'section': 'dashboard'})
+
 
 class RegisterUser(CreateView):
     form_class = RegisterUserForm
@@ -105,3 +105,52 @@ class UpdateUserProfile(UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, 'Возникла ошибка при редактировании профиля.')
         return self.render_to_response(self.get_context_data(form=form))
+
+
+class UserListView(LoginRequiredMixin, ListView):
+    queryset= User.objects.filter(is_active=True)
+    context_object_name = 'users'
+    template_name = 'account/user/list.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section'] = 'people'
+        return context
+
+
+class UserDetailView(LoginRequiredMixin, DetailView):
+    model = User
+    context_object_name = 'user'
+    template_name = 'account/user/detail.html'
+
+    def get_object(self):
+        user = get_object_or_404(klass=User,
+                                username=self.kwargs['username'],
+                                is_active=True)
+        return user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['section'] = 'people'
+        return context
+
+
+@require_POST
+@login_required
+def user_follow(request):
+    user_id = request.POST.get('id')
+    action = request.POST.get('action')
+    if user_id and action:
+        try:
+            user = User.objects.get(id=user_id)
+            if action == 'follow':
+                Contact.objects.get_or_create(
+                    user_from=request.user,
+                    user_to=user)
+            else:
+                Contact.objects.filter(user_from=request.user,
+                                       user_to=user).delete()
+            return JsonResponse({'status': 'ok'})
+        except User.DoesNotExist:
+            return JsonResponse({'status': 'error'})
+    return JsonResponse({'status': 'error'})

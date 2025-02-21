@@ -19,10 +19,6 @@ class Image(models.Model):
                                         related_name='images_liked',
                                         blank=True)
 
-
-    def __str__(self):
-        return self.title
-
     def save(self, *args, **kwargs):
         if self.pk is None:
             self.slug = unidecode(self.title.lower().replace(' ', '_'))
@@ -32,8 +28,10 @@ class Image(models.Model):
         return reverse('images:detail', args=[self.id, 
                                             #   self.slug
                                               ])
+    
+    def __str__(self):
+        return self.title
 
- 
     class Meta:
         indexes = [models.Index(fields=['-created']),]
         ordering = ['-created']
