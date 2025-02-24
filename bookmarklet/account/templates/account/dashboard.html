@@ -18,4 +18,11 @@
   <p>Вы можете <a href="{% url 'update_user_profile' user_pk=request.user.pk %}">отредактировать ваш профиль</a> 
   или <a href="{% url 'password_change' %}">сменить пароль</a>.
   </p>
+
+  <h2>Лента новостей</h2>
+  <div id="action-list">
+  {% for action in actions %}
+  {% include "actions/action/detail.html" %}
+  {% endfor %}
+  </div>
 {% endblock %}

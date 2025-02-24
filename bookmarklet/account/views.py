@@ -7,11 +7,13 @@ from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordCha
     PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, FormView, TemplateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.views.decorators.http import require_POST
 from django.http import JsonResponse
 
 from .forms import *
+from actions.utils import create_action
+from actions.models import Action
 
 
 class LoginUser(LoginView):
@@ -34,9 +36,17 @@ def logout_user(request):
 
 @login_required
 def dashboard(request):
+    actions = Action.objects.exclude(user=request.user)
+    following_ids = request.user.following.values_list('id',
+                                                       flat=True)
+    if following_ids:
+        actions = actions.filter(user_id__in=following_ids)
+        # если есть подписки на кого-то, то получаем их действия
+    actions = actions.select_related('user', 'user__profile')[:10].prefetch_related('target')[:10]
     return render(request=request,
                   template_name='account/dashboard.html',
-                  context={'section': 'dashboard'})
+                  context={'section': 'dashboard',
+                           'actions': actions,})
 
 
 class RegisterUser(CreateView):
@@ -51,6 +61,7 @@ class RegisterUser(CreateView):
     def form_valid(self, form):
         user = form.save()
         Profile.objects.create(user=user)
+        create_action(user, 'создал аккаунт')
         login(self.request, user)
         messages.success(self.request, 'Вы успешно зарегистрировались.')
         return redirect('dashboard')
@@ -147,6 +158,7 @@ def user_follow(request):
                 Contact.objects.get_or_create(
                     user_from=request.user,
                     user_to=user)
+                create_action(request.user, 'подписался на', user)
             else:
                 Contact.objects.filter(user_from=request.user,
                                        user_to=user).delete()
