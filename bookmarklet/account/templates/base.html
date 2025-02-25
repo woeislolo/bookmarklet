@@ -7,7 +7,7 @@
 </head>
 <body>
   <div id="header">
-    <span class="logo">Закладки</span>
+    <span class="logo"><a href="{% url 'dashboard' %}">Закладки</a></span>
     {% if request.user.is_authenticated %}
       <ul class="menu">
         <li {% if section == "dashboard" %}class="selected"{% endif %}>
@@ -23,10 +23,10 @@
     {% endif %}
     <span class="user">
       {% if request.user.is_authenticated %}
-        Привет, {{ request.user.first_name|default:request.user.username }},
-        <a href="{% url "logout" %}">Выйти</a>
+        <a href="{% url 'user_profile' user_pk=request.user.pk %}">{{ request.user.first_name|default:request.user.username }}</a> | 
+        <a href="{% url 'logout' %}">Выйти</a>
       {% else %}
-        <a href="{% url "login" %}">Войти</a>
+        <a href="{% url 'login' %}">Войти</a>
       {% endif %}
     </span>
   </div>

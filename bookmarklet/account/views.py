@@ -86,7 +86,7 @@ class UpdateUserProfile(UpdateView):
     template_name = 'account/profile_update.html'
     context_object_name = 'user_profile'
     form_class = ProfileUpdateForm
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('dashboard')
 
     def get_object(self):
         user_pk = User.objects.filter(pk=self.kwargs['user_pk'])[0].pk
@@ -151,6 +151,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 def user_follow(request):
     user_id = request.POST.get('id')
     action = request.POST.get('action')
+    # почему-то могу подписаться сама на себя)
     if user_id and action:
         try:
             user = User.objects.get(id=user_id)

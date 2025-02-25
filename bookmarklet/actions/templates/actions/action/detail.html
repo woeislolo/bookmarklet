@@ -6,7 +6,7 @@
     {% if profile.photo %}
       {% thumbnail user.profile.photo "80x80" crop="100%" as im %}
       <a href="{{ user.get_absolute_url }}">
-        <img src="{{ im.url }}" alt="{{ user.get_full_name }}"
+        <img src="{{ im.url }}" alt="{{ user.username }}"
          class="item-img">
       </a>
     {% endif %}
@@ -15,7 +15,7 @@
   <div class="info">
     <p>
       <span class="date">{{ action.created|timesince }} назад</span>
-      <br />
+      <br/>
       <a href="{{ user.get_absolute_url }}">
         {{ user.username }}
       </a>
@@ -27,8 +27,9 @@
       {% endif %}
     </p>
   </div>
-  <div class="images">
-        {% if action.target %}
+
+  <div>
+    {% if action.target %}
       {% with target=action.target %}
         {% if target.image %}
           {% thumbnail target.image "80x80" crop="100%" as im %}

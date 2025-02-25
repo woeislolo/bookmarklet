@@ -4,21 +4,29 @@
 
 <h1>Профиль {{ title }}</h1>
 
-<div> 
-    {% if user_profile.photo %}
-    <p><img class='img-article-left' src="{{ user_profile.photo.url }}"></p>
+{% if user_profile.photo %}
+{% load thumbnail %}
+<a href="{{ user_profile.photo.url }}">
+    <img src="{% thumbnail user_profile.photo 300x0 quality=100 %}" class="image-detail">
+</a>
+{% endif %}
+
+<div class="image-info">
+{% with user=user_profile.user %}
+    {% if user.first_name %}
+    <p>Имя: {{ user.first_name }}</p>
     {% endif %}
-    <br>
-
-    <p>Имя: {{ user_profile.user.first_name }}</p>
-    <p>Фамилия: {{ user_profile.user.last_name }}</p>
-    <p>Email: {{ user_profile.user.email }}</p>
+    {% if user.last_name %}
+    <p>Фамилия: {{ user.last_name }}</p>
+    {% endif %}
+    <p>Email: {{ user.email }}</p>
+    {% endwith %}
+    {% if user_profile.date_of_birth %}
     <p>День рождения: {{ user_profile.date_of_birth }}</p>
-
+    {% endif %}
     <p>
     <a href="{% url 'update_user_profile' user_pk=request.user.pk %}">Редактировать данные профиля</a>
     </p>
-
 </div>
 
 {% endblock content %}
