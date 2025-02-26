@@ -192,3 +192,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # django debug toolbar
 INTERNAL_IPS = ['127.0.0.1',]
+
+
+# redis
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
