@@ -169,15 +169,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-# STATIC_ROOT = '/static/'
+STATIC_ROOT = '/static/'
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [
-#     BASE_DIR / 'men/static',
-# ]
+
 
 # media
-# MEDIA_ROOT = BASE_DIR / 'media'
-# MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
 
 
 # email console
@@ -194,7 +192,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 INTERNAL_IPS = ['127.0.0.1',]
 
 
-# redis
+# redis-py: db
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 0

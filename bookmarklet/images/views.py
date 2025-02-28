@@ -15,8 +15,8 @@ from actions.utils import create_action
 
 
 redis_client = redis.Redis(host=settings.REDIS_HOST,
-                port=settings.REDIS_PORT,
-                db=settings.REDIS_DB)
+                           port=settings.REDIS_PORT,
+                           db=settings.REDIS_DB)
 
 
 @login_required
@@ -44,7 +44,7 @@ def image_detail(request, id, slug=None):
     image = get_object_or_404(Image, id=id, 
                             #   slug=slug
                               )
-    total_views = r.incr(f'image:{image.id}:views')
+    total_views = redis_client.incr(f'image:{image.id}:views')
     redis_client.zincrby('image_ranking', 1, image.id)
 
     return render(request=request,
@@ -89,14 +89,14 @@ def image_list(request):
             return HttpResponse('')
         images = paginator.page(paginator.num_pages)
     if images_only:
-        return render(request,
-                      'images/image/list_images.html',
-                      {'section': 'images',
-                       'images': images}) # JS запросы
-    return render(request,
-                  'images/image/list.html',
-                   {'section': 'images',
-                    'images': images}) # браузерные запросы
+        return render(request=request,
+                      template_name='images/image/list_images.html',
+                      context={'section': 'images',
+                               'images': images}) # JS запросы
+    return render(request=request,
+                  template_name='images/image/list.html',
+                  context={'section': 'images',
+                           'images': images}) # браузерные запросы
 
 
 @login_required
