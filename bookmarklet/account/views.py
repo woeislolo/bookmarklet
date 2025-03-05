@@ -14,6 +14,7 @@ from django.http import JsonResponse
 from .forms import *
 from actions.utils import create_action
 from actions.models import Action
+from .tasks import *
 
 
 class LoginUser(LoginView):
@@ -62,6 +63,10 @@ class RegisterUser(CreateView):
         user = form.save()
         Profile.objects.create(user=user)
         create_action(user, 'создал аккаунт')
+
+        subject = 'Registration'
+        task_send_email.delay_on_commit(user.pk, subject=subject)
+
         login(self.request, user)
         messages.success(self.request, 'Вы успешно зарегистрировались.')
         return redirect('dashboard')
@@ -110,6 +115,10 @@ class UpdateUserProfile(UpdateView):
         user.last_name = form.cleaned_data['last_name']
         user.first_name = form.cleaned_data['first_name']
         user.save()
+
+        subject = "Profile's update"
+        task_send_email.delay_on_commit(user.pk, subject=subject)
+
         messages.success(self.request, 'Профиль успешно изменен.')
         return super().form_valid(form)
     
