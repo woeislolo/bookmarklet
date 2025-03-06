@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'images.apps.ImagesConfig',
     'easy_thumbnails',
     'actions.apps.ActionsConfig',
+
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -194,18 +196,18 @@ INTERNAL_IPS = ['127.0.0.1',]
 
 
 # redis-py: db
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
-REDIS_DB = 0
+REDIS_HOST = config['redis_client_host']
+REDIS_PORT = config['redis_client_port']
+REDIS_DB = config['redis_client_db']
 
-# # redis-py: cache
-# CACHES = {
-#     "default": {
-#         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379/0",
-#     }
-# }
 
 # celery
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/1'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/2'
+CELERY_BROKER_URL = config['celery_broker_url']
+CELERY_RESULT_BACKEND = config['celery_result_backend']
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': config['celery_cache_location'],
+    }
+}
+CELERY_CACHE_BACKEND = 'default'
