@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Дашборд{% endblock %}
 
 {% block content %}
-  <h1>Dashboard</h1>
+  <h1>Дашборд</h1>
   {% with total_images_created=request.user.images_created.count %}
   <p>Добро пожаловать на ваш дашборд.
   Кол-во сохраненных в закладках изображений: {{ total_images_created }}.
@@ -17,6 +17,8 @@
   </p>
   <p>Вы можете <a href="{% url 'update_user_profile' user_pk=request.user.pk %}">отредактировать ваш профиль</a> 
   или <a href="{% url 'password_change' %}">сменить пароль</a>.
+  </p>
+  <p>Рейтинг самых популярных изображений доступен <a href="{% url 'images:ranking' %}">по этой ссылке</a>.
   </p>
 
   <h2>Лента новостей</h2>
