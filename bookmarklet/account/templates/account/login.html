@@ -4,7 +4,16 @@
 
 {% block content %}
   <h1>Авторизация</h1>
-  {% comment %} <p>Please, use the following form to log-in:</p> {% endcomment %}
+
+<div class="social">
+  <ul>
+    <li class="google">
+      <a href="{% url 'social:begin' 'google-oauth2' %}">
+          Авторизоваться через Google
+      </a>
+    </li>
+  </ul>
+</div>
 
 <form method="post">
     {% csrf_token %}
@@ -27,15 +36,5 @@
 <a href="{% url 'register' %}">Регистрация</a>
 </p>
 </div>
-
-{% comment %} <div class="social">
-    <ul>
-      <li class="google">
-        <a href="{% url 'social:begin' 'google-oauth2' %}">
-          Авторизоваться через Google
-        </a>
-      </li>
-    </ul>
-  </div> {% endcomment %}
 
 {% endblock %}
