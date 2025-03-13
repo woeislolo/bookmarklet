@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'actions.apps.ActionsConfig',
 
     'django_celery_results',
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -212,3 +213,6 @@ CACHES = {
     }
 }
 CELERY_CACHE_BACKEND = 'default'
+
+# celery-beat
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
